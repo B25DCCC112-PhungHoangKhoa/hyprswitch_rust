@@ -1,4 +1,4 @@
-# hyprswitch (Rust Edition)
+# hyprswitch_rust
 
 A high-performance native **Rust + GTK4** on-screen display (OSD) projection switcher for Hyprland that replaces manual editing of `hyprland.lua`. Designed to be triggered with **`Super + P`** (matching the Windows projection flyout workflow), it provides instantaneous (<5ms) multi-instance cycling across standard display modes with zero screen flickering, auto-detects external monitors' optimal resolutions and refresh rates, and features a frosted-glass **Caelestia shell aesthetic**.
 
@@ -12,7 +12,7 @@ A high-performance native **Rust + GTK4** on-screen display (OSD) projection swi
 - **Caelestia Shell Aesthetic & Material 3 Styling**:
   - Dynamically extracts Material 3 color tokens from `~/.local/state/caelestia/scheme.json` (fallback to `~/.config/hypr/scheme/current.lua`).
   - Frosted translucent glass background (`alpha(#surfaceContainer, 0.72)`) with deep drop shadows and smooth 32px corner rounding.
-  - Hyprland layer-shell blur (`layerrule = blur true, match:namespace hyprswitch` and `ignorealpha 0.2`) to blur wallpaper behind the switcher window.
+  - Hyprland layer-shell blur (`layerrule = blur true, match:namespace hyprswitch.*` and `ignorealpha 0.2`) to blur wallpaper behind the switcher window.
   - Active/selected mode lights up with a vibrant neon primary glowing border (`#primary` / `#f5b6c3`) and tinted container fill.
   - Status display and footer controls styled in Caelestia pill chips (`border-radius: 9999px`).
 - **Auto-Detection of External Resolutions & Refresh Rates**:
@@ -47,9 +47,9 @@ Clone the repository and run the installer:
 The installation script will:
 1. Verify required build dependencies (`cargo`, `gtk4`, `gtk4-layer-shell`, `hyprctl`).
 2. Build an optimized release binary (`cargo build --release`).
-3. Symlink `target/release/hyprswitch` into `~/.local/bin/hyprswitch`.
+3. Symlink `target/release/hyprswitch_rust` into `~/.local/bin/hyprswitch_rust`.
 4. Add `pcall(require, "monitors")` to `~/.config/hypr/hyprland.lua`.
-5. Add the `SUPER + P` keybind (`hl.bind("SUPER +  P", hl.dsp.exec_cmd("hyprswitch"))`) to `~/.config/hypr/hyprland/keybinds.lua`.
+5. Add the `SUPER + P` keybind (`hl.bind("SUPER +  P", hl.dsp.exec_cmd("hyprswitch_rust"))`) to `~/.config/hypr/hyprland/keybinds.lua`.
 6. Add layer rules (blur, popin animation, ignorealpha) to `~/.config/hypr/hyprland/rules.conf`.
 7. Reload the active Hyprland configuration automatically.
 
@@ -70,20 +70,20 @@ The installation script will:
 
 ## CLI Usage
 
-`hyprswitch` can also be queried or scripted directly from the terminal without opening the UI:
+`hyprswitch_rust` can also be queried or scripted directly from the terminal without opening the UI:
 
 ```bash
 # Open switcher OSD / cycle mode (called by Super + P)
-hyprswitch
+hyprswitch_rust
 
 # Check monitor auto-detection and current active mode (<5ms)
-hyprswitch --status
+hyprswitch_rust --status
 
 # Apply a mode directly via CLI without UI
-hyprswitch --apply pc
-hyprswitch --apply duplicate
-hyprswitch --apply extend
-hyprswitch --apply second
+hyprswitch_rust --apply pc
+hyprswitch_rust --apply duplicate
+hyprswitch_rust --apply extend
+hyprswitch_rust --apply second
 ```
 
 ---

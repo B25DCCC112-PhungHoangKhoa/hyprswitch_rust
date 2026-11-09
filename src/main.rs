@@ -8,8 +8,8 @@ use gtk4::glib::ExitCode;
 
 #[derive(Parser, Debug)]
 #[command(
-    name = "hyprswitch",
-    about = "Display projection switcher for Hyprland with Caelestia aesthetic",
+    name = "hyprswitch_rust",
+    about = "Display projection switcher for Hyprland with Caelestia aesthetic (Rust Edition)",
     version
 )]
 struct Cli {

@@ -27,7 +27,7 @@ pub struct HyprswitchApp {
 impl HyprswitchApp {
     pub fn new() -> Self {
         let app = Application::builder()
-            .application_id("org.hyprland.hyprswitch")
+            .application_id("org.hyprland.hyprswitch_rust")
             .flags(ApplicationFlags::HANDLES_COMMAND_LINE)
             .build();
 

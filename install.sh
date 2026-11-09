@@ -3,9 +3,9 @@ set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 BIN_DIR="$HOME/.local/bin"
-TARGET_LINK="$BIN_DIR/hyprswitch"
+TARGET_LINK="$BIN_DIR/hyprswitch_rust"
 
-echo "=== Installing hyprswitch (Rust Edition) ==="
+echo "=== Installing hyprswitch_rust (Rust Edition) ==="
 
 # 1. Dependency checks
 echo "Checking dependencies..."
@@ -36,7 +36,7 @@ echo "Building release binary with Cargo..."
 cd "$SCRIPT_DIR"
 cargo build --release
 
-RELEASE_BIN="$SCRIPT_DIR/target/release/hyprswitch"
+RELEASE_BIN="$SCRIPT_DIR/target/release/hyprswitch_rust"
 if [ ! -f "$RELEASE_BIN" ]; then
     echo "Error: Build failed; binary not found at $RELEASE_BIN"
     exit 1
@@ -65,18 +65,16 @@ if [ -f "$HYPR_LUA" ]; then
     fi
 fi
 
-# 5. Setup keybind in ~/.config/hypr/hyprland/keybinds.lua if not present
+# 5. Setup keybind in ~/.config/hypr/hyprland/keybinds.lua
 KEYBINDS_LUA="$HOME/.config/hypr/hyprland/keybinds.lua"
 if [ -f "$KEYBINDS_LUA" ]; then
-    if grep -q 'hl\.bind("SUPER, P", hl\.dsp\.exec_cmd("hyprswitch"))' "$KEYBINDS_LUA"; then
-        sed -i 's/hl\.bind("SUPER, P", hl\.dsp\.exec_cmd("hyprswitch"))/hl\.bind("SUPER +  P", hl\.dsp\.exec_cmd("hyprswitch"))/g' "$KEYBINDS_LUA"
-        echo "✓ Updated hyprswitch keybind syntax to 'SUPER +  P' in $KEYBINDS_LUA"
-    elif ! grep -q 'hyprswitch' "$KEYBINDS_LUA"; then
-        echo "Adding Super+P keybind to $KEYBINDS_LUA..."
-        echo -e '\n-- Display switcher (hyprswitch)\nhl.bind("SUPER +  P", hl.dsp.exec_cmd("hyprswitch"))' >> "$KEYBINDS_LUA"
-        echo "✓ Added 'SUPER +  P' bind to $KEYBINDS_LUA"
+    if grep -q 'hl\.dsp\.exec_cmd("hyprswitch' "$KEYBINDS_LUA"; then
+        sed -i 's/hl\.bind("SUPER.*", hl\.dsp\.exec_cmd("hyprswitch[^"]*"))/hl\.bind("SUPER +  P", hl\.dsp\.exec_cmd("hyprswitch_rust"))/g' "$KEYBINDS_LUA"
+        echo "✓ Updated keybind to run 'hyprswitch_rust' in $KEYBINDS_LUA"
     else
-        echo "✓ $KEYBINDS_LUA already contains hyprswitch bind."
+        echo "Adding Super+P keybind to $KEYBINDS_LUA..."
+        echo -e '\n-- Display switcher (hyprswitch_rust)\nhl.bind("SUPER +  P", hl.dsp.exec_cmd("hyprswitch_rust"))' >> "$KEYBINDS_LUA"
+        echo "✓ Added 'SUPER +  P' bind to $KEYBINDS_LUA"
     fi
 fi
 
@@ -85,10 +83,11 @@ RULES_CONF="$HOME/.config/hypr/hyprland/rules.conf"
 if [ -f "$RULES_CONF" ]; then
     if ! grep -q 'match:namespace hyprswitch' "$RULES_CONF"; then
         echo "Adding hyprswitch layer rules to $RULES_CONF..."
-        echo -e '\n# hyprswitch\nlayerrule = animation popin 85%, match:namespace hyprswitch\nlayerrule = blur true, match:namespace hyprswitch\nlayerrule = ignorealpha 0.2, match:namespace hyprswitch' >> "$RULES_CONF"
+        echo -e '\n# hyprswitch\nlayerrule = animation popin 85%, match:namespace hyprswitch.*\nlayerrule = blur true, match:namespace hyprswitch.*\nlayerrule = ignorealpha 0.2, match:namespace hyprswitch.*' >> "$RULES_CONF"
         echo "✓ Added hyprswitch layer rules to $RULES_CONF"
     else
-        echo "✓ $RULES_CONF already contains hyprswitch layer rules."
+        sed -i 's/match:namespace hyprswitch$/match:namespace hyprswitch.*/g' "$RULES_CONF"
+        echo "✓ Layer rules verified in $RULES_CONF"
     fi
 fi
 
@@ -99,6 +98,6 @@ if command -v hyprctl &>/dev/null && [ -n "$HYPRLAND_INSTANCE_SIGNATURE" ]; then
 fi
 
 echo ""
-echo "hyprswitch (Rust Edition) installed successfully!"
-echo "Run 'hyprswitch --status' to inspect your monitors."
+echo "hyprswitch_rust installed successfully!"
+echo "Run 'hyprswitch_rust --status' to inspect your monitors."
 echo "Press Super + P to open the switcher and cycle display modes."

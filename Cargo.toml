@@ -1,5 +1,5 @@
 [package]
-name = "hyprswitch"
+name = "hyprswitch_rust"
 version = "0.1.0"
 edition = "2024"
 
